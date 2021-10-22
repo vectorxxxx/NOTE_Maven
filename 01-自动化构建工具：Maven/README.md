@@ -160,9 +160,7 @@
 
 
 
-## 7、第一个 Maven 工程
-
-**创建约定的目录结构**
+## 7、约定的目录结构
 
 - **根目录**：工程名
 - |—— **src 目录**：源码
@@ -182,3 +180,144 @@
         2. **遵守框架内部约定**：如`log4j.properties`/`log4j.xml`
 - JavaEE 的开发共识：**约定 > 配置 > 编码**
 
+
+
+## 8、常见的 Maven 命令
+
+:heavy_exclamation_mark: :heavy_exclamation_mark: :heavy_exclamation_mark: 注意：执行与构建过程相关的 Maven 命令，必须进入 pom.xml 所在的目录
+
+与构建过程相关：编译、测试、打包、.……
+
+- `mvn clean`：清理
+- `mvn compile `：编译主程序
+- `mvn test-compile`：编译测试程序
+- `mvn test`：执行测试
+- `mvn package`：打包
+
+
+
+## 9、关于联网问题
+
+Maven 核心程序仅仅是定义了抽象的生命周期，但是具体的工作必须要由插件来完成。而插件本身并不包含在 Maven 核心程序中
+
+1. 执行的 Maven 命令需要用到某些插件时，Maven 核心程序会首先在本地仓库中查找
+   - 本地仓库的默认位置：`【系统当前用户的家目录】\.m2\repository`（windows：`C:\Users\[用户名]\.m2\repository`）
+2. 修改本地仓库的默认位置，Maven 核心程序会到我们事先准备好的目录下查找插件
+   - 打开`[Maven解压目录]\conf\settings.xml`，找到`localRepository`标签，修改目录
+3. Maven 核心程序如果在本地仓库中找不到需要的插件，会自动到中央仓库下载。如果此时无法连接外网，则构建失败
+
+
+
+## 10、第一个 Maven 程序
+
+### 目录结构
+
+![image-20211022200617690](https://i.loli.net/2021/10/22/c3eW2LOaKNmpjbu.png)
+
+### 编写代码
+
+```java
+public class Hello {
+  public String sayHello(String name) {
+    return "Hello " + name + "!";
+  }
+}
+
+public class HelloTest {
+  @Test
+  public void testHello() {
+    Hello hello = new Hello();
+    String results = hello.sayHello("world");
+    assertEquals("Hello world!", results);
+  }
+}
+```
+
+### 编译
+
+```shell
+mvn compile
+```
+
+执行过程
+
+![image-20211022200853734](https://i.loli.net/2021/10/22/w4TdnC5hPq3ik6J.png)
+
+目录内容：
+
+- `classes`目录
+
+![image-20211022202257765](https://i.loli.net/2021/10/22/hBEOXNUjovPIm45.png)
+
+### 测试编译
+
+```shell
+mvn test-compile
+```
+
+执行过程
+
+![image-20211022202142335](https://i.loli.net/2021/10/22/tkNahpPO2BQ5sXW.png)
+
+目录内容：
+
+- `classes`目录：主程序编译后的字节码文件
+- `test-classes`目录：测试程序编译后的字节码文件
+
+![image-20211022202245195](https://i.loli.net/2021/10/22/CnBqgLNMFJSGoQi.png)
+
+### 测试
+
+```shell
+mvn test
+```
+
+执行过程
+
+![image-20211022202514540](https://i.loli.net/2021/10/22/nAZ9KG1VYDrqHXp.png)
+
+目录结构
+
+- `surefire-reports`：测试报告，本例为`com.vectorx.maven.HelloTest.txt`
+- 测试报告会统计所有测试方法执行的最终结果
+
+![image-20211022202427603](https://i.loli.net/2021/10/22/WE6Lu9txV3kUlBo.png)
+
+![image-20211022202839723](https://i.loli.net/2021/10/22/wYmtBLgaRNvEfCx.png)
+
+本例只有一个测试方法，并且最终运行结果为：`运行成功数：1，运行失败数：0，运行错误数：0，跳过：0，总耗时：0.103 秒`，说明本例中`testHello`测试方法断言正确，验证通过
+
+### 打包
+
+```
+mvn package
+```
+
+执行过程
+
+![image-20211022200943539](https://i.loli.net/2021/10/22/k9zrRNnsLomS1yi.png)
+
+目录内容：
+
+- `classes`/`test-classes`：主程序 / 测试程序编译的字节码文件
+- `surefire-reports`：测试报告
+- `Hello-0.0.1-SNAPSHOT.jar`：jar 包文件
+- `maven-archiver`/`maven-status`等其他额外文件
+
+![image-20211022203445618](https://i.loli.net/2021/10/22/Vd36r4yiSFA5GL1.png)
+
+### 清理
+
+```shell
+mvn clean
+```
+
+执行过程
+
+![image-20211022200830744](https://i.loli.net/2021/10/22/erXvUTE8YnGyKdZ.png)
+
+目录内容：
+
+- 清理会清空整个`target`目录及其内容
+
+![image-20211022202049176](https://i.loli.net/2021/10/22/4cRTxhKYfwJsLki.png)
