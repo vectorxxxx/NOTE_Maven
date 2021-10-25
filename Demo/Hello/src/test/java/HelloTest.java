@@ -2,6 +2,7 @@ package com.vectorx.maven;
 
 import static junit.framework.Assert.*;
 
+import com.vectorx.maven.Hello;
 import org.junit.Test;
 
 public class HelloTest {
