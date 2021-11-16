@@ -193,6 +193,8 @@
 - `mvn test-compile`：编译测试程序
 - `mvn test`：执行测试
 - `mvn package`：打包
+- `mvn install`：安装
+- `mvn site`：生成站点
 
 
 

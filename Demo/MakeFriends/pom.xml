@@ -1,12 +1,12 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.vectorx.maven</groupId>
-    <artifactId>HelloFriend</artifactId>
+
+    <groupId>vectorx.maven</groupId>
+    <artifactId>MakeFriends</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>HelloFriend</name>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -16,20 +16,21 @@
         </dependency>
         <dependency>
             <groupId>com.vectorx.maven</groupId>
-            <artifactId>Hello</artifactId>
+            <artifactId>OurFriends</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
+            <groupId>com.vectorx.maven</groupId>
+            <artifactId>HelloFriend</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
 </project>
