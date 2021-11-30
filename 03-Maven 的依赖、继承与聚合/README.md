@@ -10,16 +10,16 @@
 
 ![image-20211129232327794](https://i.loli.net/2021/11/29/UMaYK4OLePs5v2m.png)
 
-- 【1】好处：可以传递的依赖不必在每个模块工程中都重复声明，在“最下面”的工程中依赖一次即可
-- 【2】注意：非 compile 范围的依赖不能传递。所以在各个工程模块中，如果有需要就得重复声明依赖
+- **好处**：可以传递的依赖不必在每个模块工程中都重复声明，在“最下面”的工程中依赖一次即可
+- **注意**：非 compile 范围的依赖不能传递。所以在各个工程模块中，如果有需要就得重复声明依赖
 
 ### 1.2、依赖的排除
 
-- 【1】需要设置依赖排除的场合
+- 需要设置依赖排除的场合
 
 ![image-20211129232635639](https://i.loli.net/2021/11/29/42mVph5SbNtDO9v.png)
 
-- 【2】依赖排除的设置方式
+- 依赖排除的设置方式
 
   ```xml
   <exclusions>
@@ -32,13 +32,13 @@
 
 ### 1.3、依赖的原则说明
 
-- 【1】作用：解决模块工程之间的 jar 包冲突问题
+- **作用**：解决模块工程之间的 jar 包冲突问题
 
-- 【2】情景设定1：验证路径最短者优先原则
+- **情景设定1**：验证路径最短者优先原则
 
   ![image-20211129233424068](https://i.loli.net/2021/11/29/T4FGhLrYiMHjuAf.png)
 
-- 【3】情景设定2：验证路径相同时先声明者优先（先声明指的是 dependency 标签的声明顺序）
+- **情景设定2**：验证路径相同时先声明者优先（先声明指的是 dependency 标签的声明顺序）
 
   ![image-20211129233559266](https://i.loli.net/2021/11/29/1LSjOAcoKMJFR4f.png)
 
@@ -74,11 +74,108 @@
 
 ## 2、继承
 
+**现状**
+
+- Hello 依赖的 Junit 版本：4.0
+- HelloFriend 依赖的 Junit 版本：4.0
+- MakeFriends 依赖的 Junit 版本：4.9
+
+由于`test`范围的依赖不能传递，所以必然会分散在各个模块工程中，很容易造成版本不一致
+
+**需求**
+
+- 统一管理各个模块工程中对`junit`依赖的版本
+
+**解决思路**
+
+- 将`junit`依赖统一提取到“父”工程中，在子工程中声明`junit`依赖时不指定版本，以父工程中统一设定的为准。同时也便于修改
+
+**操作步骤**
+
+1. 创建一个 Maven 工程作为父工程（<mark>注意打包方式为`pom`</mark>）
+
+   ```xml
+   <groupId>com.vectorx.maven</groupId>
+   <artifactId>Parent</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
+   <packaging>pom</packaging>
+   ```
+
+2. 在父工程中统一`junit`的依赖
+
+   ```xml
+   <dependencyManagement>
+       <dependencies>
+           <dependency>
+               <groupId>junit</groupId>
+               <artifactId>junit</artifactId>
+               <version>4.0</version>
+               <scope>test</scope>
+           </dependency>
+       </dependencies>
+   </dependencyManagement>
+   ```
+
+3. 在子工程中声明对父工程的引用
+
+   ```xml
+   <parent>
+       <groupId>com.vectorx.maven</groupId>
+       <artifactId>Parent</artifactId>
+       <version>0.0.1-SNAPSHOT</version>
+   </parent>
+   <groupId>com.vectorx.maven</groupId>
+   <artifactId>Hello</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
+   <name>Hello</name>
+   ```
+
+4. 删除子工程坐标中与父工程重复的内容
+
+   ![image-20211130214445099](https://i.loli.net/2021/11/30/g3OIZPKkfeRDtro.png)
+
+   ```xml
+   <parent>
+       <groupId>com.vectorx.maven</groupId>
+       <artifactId>Parent</artifactId>
+       <version>0.0.1-SNAPSHOT</version>
+   </parent>
+   <artifactId>Hello</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
+   <name>Hello</name>
+   ```
+
+5. 删除子工程中`junit`依赖的版本号部分
+
+   ```xml
+   <dependency>
+       <groupId>junit</groupId>
+       <artifactId>junit</artifactId>
+       <scope>test</scope>
+   </dependency>
+   ```
+
+**注意**
+
+- 配置继承后，执行安装命令时要先安装父工程
+
 ## 3、聚合
 
+- **作用**：一键安装各个模块工程
 
+- **配置方式**：在一个”总的聚合工程”中配置各个参与聚合的模块
 
+  ```xml
+  <!--配置聚合-->
+  <modules>
+      <!--指定各个子工程的相对路径-->
+      <module>../Hello</module>
+      <module>../HelloFriend</module>
+      <module>../MakeFriends</module>
+  </modules>
+  ```
 
+- **使用方式**：在聚合工程上进行`mvn install`即可
 
 
 

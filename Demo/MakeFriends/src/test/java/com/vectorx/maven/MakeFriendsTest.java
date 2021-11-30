@@ -1,5 +1,9 @@
 package com.vectorx.maven;
 
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+
 public class MakeFriendsTest {
     @Test
     public void testMakeFriends() {
